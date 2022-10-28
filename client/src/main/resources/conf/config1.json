@@ -1,0 +1,9 @@
+{
+  "http_port": 28201,
+  "redis_host": "localhost:6379",
+  "server_host": "localhost",
+  "server_port": 28100,
+  "tcp_port": 7001,
+  "p2p_server_host": "localhost",
+  "p2p_server_port": 6000
+}

@@ -1,0 +1,11 @@
+{
+  "http_port": 28100,
+  "redis_host": "localhost:6379",
+  "mysql_host": "127.0.0.1",
+  "mysql_port": 3306,
+  "mysql_database": "avars_server",
+  "mysql_user": "root",
+  "mysql_password": "2858300wc",
+  "tcp_port": 6000,
+  "level_path": "/home/zhangxiaoyu/levelDB0"
+}

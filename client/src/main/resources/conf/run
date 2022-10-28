@@ -1,0 +1,2 @@
+java -jar target/client-1.0.0-SNAPSHOT-fat.jar -conf src/main/resources/conf/config0.json
+java -jar target/client-1.0.0-SNAPSHOT-fat.jar -conf src/main/resources/conf/config1.json
