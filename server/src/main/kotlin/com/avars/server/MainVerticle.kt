@@ -61,4 +61,7 @@ private suspend fun deployVerticles(vertx: Vertx, config: JsonObject) {
     vertx.deployVerticle(
         "com.avars.server.p2p.P2PVerticle", DeploymentOptions().setConfig(config)
     ).await()
+    vertx.deployVerticle(
+        "com.avars.server.queue.QueueVerticle", DeploymentOptions().setConfig(config)
+    ).await()
 }

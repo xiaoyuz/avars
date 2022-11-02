@@ -5,11 +5,9 @@ import com.avars.common.handleMessage
 import com.avars.common.p2p.NetworkData
 import com.avars.common.p2p.message.ChatInfoMessage
 import com.avars.server.EnvConfig
-import com.avars.server.core.P2P_PING
-import com.avars.server.core.P2P_REMOVE_CLIENT
 import com.avars.server.p2p.client.P2PClient
 import com.avars.common.p2p.message.PingMessage
-import com.avars.server.core.P2P_CHAT_MESSAGE_SEND
+import com.avars.server.core.*
 import com.avars.server.p2p.server.P2PServer
 import io.vertx.core.eventbus.Message
 import io.vertx.core.impl.logging.LoggerFactory
@@ -31,7 +29,15 @@ class P2PVerticle : CoroutineVerticle() {
         val bus = vertx.eventBus()
         bus.consumer(P2P_PING, this::ping)
         bus.consumer(P2P_REMOVE_CLIENT, this::removeClient)
-        bus.consumer(P2P_CHAT_MESSAGE_SEND, this::chatMessageSend)
+        bus.consumer(P2P_CHAT_MESSAGES_SEND, this::chatMessagesSend)
+        bus.consumer(P2P_SOCKET_EXISTED, this::socketExisted)
+    }
+
+    private fun socketExisted(message: Message<String>) {
+        handleMessage(message, P2P_CODE_ERROR) {
+            val address = it.body()
+            message.reply(p2pClient.socketExisted(address))
+        }
     }
 
     private fun ping(message: Message<PingMessage>) {
@@ -39,6 +45,7 @@ class P2PVerticle : CoroutineVerticle() {
             val pingMessage = it.body()
             if (!p2pClient.socketExisted(pingMessage.address)) {
                 p2pClient.addClient(pingMessage.address, pingMessage.networkData)
+                vertx.eventBus().publish(P2P_CHAT_CLIENT_CONNECT, pingMessage.address)
             }
             message.reply("")
         }
@@ -51,9 +58,11 @@ class P2PVerticle : CoroutineVerticle() {
         }
     }
 
-    private fun chatMessageSend(message: Message<ChatInfoMessage>) {
+    private fun chatMessagesSend(message: Message<List<ChatInfoMessage>>) {
         handleMessage(message, P2P_CODE_ERROR) {
-            p2pClient.send(it.body())
+            it.body().forEach {
+                p2pClient.send(it)
+            }
             message.reply("")
         }
     }

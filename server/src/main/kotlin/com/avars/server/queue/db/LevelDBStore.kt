@@ -15,6 +15,6 @@ class LevelDBStore(private val levelDB: DB) : DBStore {
     }
 
     override suspend fun remove(key: String) = withContext(Dispatchers.Default) {
-        levelDB.delete(levelDB.get(key.toByteArray()))
+        levelDB.delete(key.toByteArray())
     }
 }
